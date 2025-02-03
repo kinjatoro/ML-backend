@@ -22,6 +22,11 @@ const contratoSchema = new mongoose.Schema({
     trim: true,
     default: null,
   },
+  calles: {
+    type: String,
+    trim: true,
+    default: null,
+  },
   telefono: {
     type: String,
     trim: true,
@@ -60,6 +65,10 @@ const contratoSchema = new mongoose.Schema({
   fecha2: {
     type: String,
     trim: true,
+    default: null,
+  },
+  fecha3: {  // Fecha de la visita (en formato ISO)
+    type: String,  // Se guarda como cadena de texto en formato ISO
     default: null,
   },
   estado: {

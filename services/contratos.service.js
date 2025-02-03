@@ -10,6 +10,7 @@ exports.publicarContratacion = async function (contrato) {
         material: contrato.material || null,
         localidad: contrato.localidad || null,
         direccion: contrato.direccion || null,
+        calles: contrato.calles || null,
         telefono: contrato.telefono || null,
         bacha: contrato.bacha || null,
         medidas: contrato.medidas || null,
@@ -18,6 +19,7 @@ exports.publicarContratacion = async function (contrato) {
         descripcion: contrato.descripcion || null,
         fecha1: contrato.fecha1 || null,
         fecha2: contrato.fecha2 || null,
+        fecha3: contrato.fecha3 || null,
         estado: contrato.estado || null,
       });
       
@@ -57,6 +59,7 @@ exports.modificarContratacion = async function (contrato) {
     oldContrato.material = contrato.material ? contrato.material : oldContrato.material;
     oldContrato.localidad = contrato.localidad ? contrato.localidad : oldContrato.localidad;
     oldContrato.direccion = contrato.direccion ? contrato.direccion : oldContrato.direccion;
+    oldContrato.calles = contrato.calles ? contrato.calles : oldContrato.calles;
     oldContrato.telefono = contrato.telefono ? contrato.telefono : oldContrato.telefono;
     oldContrato.bacha = contrato.bacha ? contrato.bacha : oldContrato.bacha;
     oldContrato.medidas = contrato.medidas ? contrato.medidas : oldContrato.medidas;
@@ -65,6 +68,7 @@ exports.modificarContratacion = async function (contrato) {
     oldContrato.descripcion = contrato.descripcion ? contrato.descripcion : oldContrato.descripcion;
     oldContrato.fecha1 = contrato.fecha1 ? contrato.fecha1 : oldContrato.fecha1;
     oldContrato.fecha2 = contrato.fecha2 ? contrato.fecha2 : oldContrato.fecha2;
+    oldContrato.fecha3 = contrato.fecha3 ? contrato.fecha3 : oldContrato.fecha3;
     oldContrato.estado = contrato.estado ? contrato.estado : oldContrato.estado;
 
     try {

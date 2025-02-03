@@ -6,6 +6,7 @@ exports.publicarContratacion = async function (req, res, next) {
         material: req.body.material,
         localidad: req.body.localidad,
         direccion: req.body.direccion,
+        calles: req.body.calles,
         telefono: req.body.telefono,
         bacha: req.body.bacha,
         medidas: req.body.medidas,
@@ -14,6 +15,7 @@ exports.publicarContratacion = async function (req, res, next) {
         descripcion: req.body.descripcion,
         fecha1: req.body.fecha1,
         fecha2: req.body.fecha2,
+        fecha3: req.body.fecha3,
         estado: 'activo',
     }
     try {
@@ -36,6 +38,7 @@ exports.modificarContratacion = async function (req, res, next) {
         material: req.body.material ? req.body.material : null,
         localidad: req.body.localidad ? req.body.localidad : null,
         direccion: req.body.direccion ? req.body.direccion : null,
+        calles: req.body.calles ? req.body.calles : null,
         telefono: req.body.telefono ? req.body.telefono : null,
         bacha: req.body.bacha ? req.body.bacha : null,
         medidas: req.body.medidas ? req.body.medidas : null,
@@ -44,6 +47,7 @@ exports.modificarContratacion = async function (req, res, next) {
         descripcion: req.body.descripcion ? req.body.descripcion : null,
         fecha1: req.body.fecha1 ? req.body.fecha1 : null,
         fecha2: req.body.fecha2 ? req.body.fecha2 : null,
+        fecha3: req.body.fecha3 ? req.body.fecha3 : null,
         estado: req.body.estado ? req.body.estado : null,
     }
 
