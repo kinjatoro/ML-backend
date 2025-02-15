@@ -1,6 +1,6 @@
 // scheduler.js
 const cron = require('node-cron');
-const Order = require('./models/order');     // Asegúrate de que la ruta sea la correcta
+const Order = require('./models/contratos');     // Asegúrate de que la ruta sea la correcta
 const Device = require('./models/device');     // Tu modelo de dispositivos, donde guardas los tokens
 const { sendPushNotification } = require('./services/notification.service');
 

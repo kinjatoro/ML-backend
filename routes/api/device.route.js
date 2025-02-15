@@ -1,7 +1,7 @@
 // routes/device.js
 const express = require('express');
 const router = express.Router();
-const Device = require('../models/Device');
+const Device = require('../../models/device');
 
 router.post('/register-token', async (req, res) => {
   const { token } = req.body;
