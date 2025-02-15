@@ -68,7 +68,7 @@ const contratoSchema = new mongoose.Schema({
     default: null,
   },
   fecha3: {  // Fecha de la visita (en formato ISO)
-    type: String,  // Se guarda como cadena de texto en formato ISO
+    type: Date,  // Se guarda como cadena de texto en formato ISO
     default: null,
   },
   estado: {
@@ -76,6 +76,12 @@ const contratoSchema = new mongoose.Schema({
     trim: true,
     default: null,
   },
+  notificaciones: {
+    notificacion24h: { type: Date }, // Fecha en que se debe enviar la notificación 24h antes
+    notificacion1h: { type: Date },  // Fecha en que se debe enviar la notificación 1h antes
+  },
+  enviada24h: { type: Boolean, default: false },
+  enviada1h: { type: Boolean, default: false },
 });
 
 

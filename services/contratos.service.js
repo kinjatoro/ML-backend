@@ -21,6 +21,15 @@ exports.publicarContratacion = async function (contrato) {
         fecha2: contrato.fecha2 || null,
         fecha3: contrato.fecha3 || null,
         estado: contrato.estado || null,
+
+        notificaciones: {
+            notificacion24h: contrato.notificaciones?.notificacion24h || null,
+            notificacion1h: contrato.notificaciones?.notificacion1h || null,
+          },
+      
+          // Inicializamos los flags de notificaciones enviadas
+          enviada24h: contrato.enviada24h ?? false,
+          enviada1h: contrato.enviada1h ?? false,
       });
       
 
@@ -70,6 +79,9 @@ exports.modificarContratacion = async function (contrato) {
     oldContrato.fecha2 = contrato.fecha2 ? contrato.fecha2 : oldContrato.fecha2;
     oldContrato.fecha3 = contrato.fecha3 ? contrato.fecha3 : oldContrato.fecha3;
     oldContrato.estado = contrato.estado ? contrato.estado : oldContrato.estado;
+
+    if (contrato.enviada24h !== undefined) oldContrato.enviada24h = contrato.enviada24h;
+    if (contrato.enviada1h !== undefined) oldContrato.enviada1h = contrato.enviada1h;
 
     try {
         var savedContrato = await oldContrato.save()

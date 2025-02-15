@@ -13,6 +13,7 @@ app.use(express.json());
 //test
 app.use(cors())
 
+require('./scheduler');
 
 app.use('/api', apiRouter);
 app.use('/', indexRouter);
