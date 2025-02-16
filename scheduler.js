@@ -17,6 +17,13 @@ cron.schedule('* * * * *', async () => {
 
     for (let order of orders24h) {
       // Obtener todos los tokens registrados
+
+      if (order.notificaciones.notificacion24h.getTime() < (ahora.getTime() - 60 * 60 * 1000)) {
+        order.enviada24h = true; // Marcamos como enviada sin enviarla
+        await order.save();
+        continue;
+      }
+
       const devices = await Device.find();
       const tokens = devices.map(device => device.expoPushToken);
 
