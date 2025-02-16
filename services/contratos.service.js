@@ -52,10 +52,8 @@ exports.modificarContratacion = async function (contrato) {
         let oldContrato = await Contrato.findOne(id);
         if (!oldContrato) throw new Error("Contrato no encontrado");
 
-        // Convertimos fecha3 si fue modificada
         const fecha3 = contrato.fecha3 ? new Date(contrato.fecha3) : oldContrato.fecha3;
 
-        // Actualizamos datos
         oldContrato.nombre = contrato.nombre ?? oldContrato.nombre;
         oldContrato.material = contrato.material ?? oldContrato.material;
         oldContrato.localidad = contrato.localidad ?? oldContrato.localidad;
@@ -72,14 +70,6 @@ exports.modificarContratacion = async function (contrato) {
         oldContrato.fecha3 = fecha3;
         oldContrato.estado = contrato.estado ?? oldContrato.estado;
 
-        // 🔥 **Recalculamos las notificaciones solo si cambia `fecha3`**
-        if (contrato.fecha3) {
-            oldContrato.notificaciones.notificacion24h = new Date(fecha3.getTime() - 24 * 60 * 60 * 1000);
-            oldContrato.notificaciones.notificacion1h = new Date(fecha3.getTime() - 1 * 60 * 60 * 1000);
-            oldContrato.enviada24h = false; // Reiniciamos flags
-            oldContrato.enviada1h = false;
-        }
-
         const savedContrato = await oldContrato.save();
         return savedContrato;
 
@@ -88,6 +78,7 @@ exports.modificarContratacion = async function (contrato) {
         throw new Error("Error al modificar contrato");
     }
 };
+
 
 
 exports.borrarContratacion = async function (id) {
