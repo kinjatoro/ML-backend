@@ -48,11 +48,14 @@ exports.publicarContratacion = async function (contrato) {
 
 exports.modificarContratacion = async function (contrato) {
     try {
-        const oldContrato = await Contrato.findById(contrato._id);
-        if (!oldContrato) {
-            throw new Error("Contrato not found");
-        }
+        const id = { _id: contrato.id };
+        let oldContrato = await Contrato.findOne(id);
+        if (!oldContrato) throw new Error("Contrato no encontrado");
 
+        // Convertimos fecha3 si fue modificada
+        const fecha3 = contrato.fecha3 ? new Date(contrato.fecha3) : oldContrato.fecha3;
+
+        // Actualizamos datos
         oldContrato.nombre = contrato.nombre ?? oldContrato.nombre;
         oldContrato.material = contrato.material ?? oldContrato.material;
         oldContrato.localidad = contrato.localidad ?? oldContrato.localidad;
@@ -66,19 +69,26 @@ exports.modificarContratacion = async function (contrato) {
         oldContrato.descripcion = contrato.descripcion ?? oldContrato.descripcion;
         oldContrato.fecha1 = contrato.fecha1 ?? oldContrato.fecha1;
         oldContrato.fecha2 = contrato.fecha2 ?? oldContrato.fecha2;
-        oldContrato.fecha3 = contrato.fecha3 ?? oldContrato.fecha3;
+        oldContrato.fecha3 = fecha3;
         oldContrato.estado = contrato.estado ?? oldContrato.estado;
 
-        if (contrato.enviada24h !== undefined) oldContrato.enviada24h = contrato.enviada24h;
-        if (contrato.enviada1h !== undefined) oldContrato.enviada1h = contrato.enviada1h;
+        // 🔥 **Recalculamos las notificaciones solo si cambia `fecha3`**
+        if (contrato.fecha3) {
+            oldContrato.notificaciones.notificacion24h = new Date(fecha3.getTime() - 24 * 60 * 60 * 1000);
+            oldContrato.notificaciones.notificacion1h = new Date(fecha3.getTime() - 1 * 60 * 60 * 1000);
+            oldContrato.enviada24h = false; // Reiniciamos flags
+            oldContrato.enviada1h = false;
+        }
 
-        return await oldContrato.save();
+        const savedContrato = await oldContrato.save();
+        return savedContrato;
 
     } catch (e) {
         console.error("Error al modificar contrato:", e);
-        throw new Error("An error occurred while updating the Contrato");
+        throw new Error("Error al modificar contrato");
     }
 };
+
 
 exports.borrarContratacion = async function (id) {
     try {
