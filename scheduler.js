@@ -18,7 +18,7 @@ cron.schedule('* * * * *', async () => {
     for (let order of orders24h) {
       // Obtener todos los tokens registrados
       const devices = await Device.find();
-      const tokens = devices.map(device => device.token);
+      const tokens = devices.map(device => device.expoPushToken);
 
       // Enviar notificación a todos los tokens
       await Promise.all(tokens.map(token =>
@@ -38,7 +38,7 @@ cron.schedule('* * * * *', async () => {
 
     for (let order of orders1h) {
       const devices = await Device.find();
-      const tokens = devices.map(device => device.token);
+      const tokens = devices.map(device => device.expoPushToken);
 
       await Promise.all(tokens.map(token =>
         sendPushNotification(token, 'Recordatorio de visita', 'Falta 1 hora para la visita programada.')

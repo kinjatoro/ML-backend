@@ -1,63 +1,84 @@
 var ContratoService = require('../services/contratos.service');
 
-exports.publicarContratacion = async function (req, res, next) {
-    var Contrato = {
-        nombre: req.body.nombre,
-        material: req.body.material,
-        localidad: req.body.localidad,
-        direccion: req.body.direccion,
-        calles: req.body.calles,
-        telefono: req.body.telefono,
-        bacha: req.body.bacha,
-        medidas: req.body.medidas,
-        factura: req.body.factura,
-        pago: req.body.pago,
-        descripcion: req.body.descripcion,
-        fecha1: req.body.fecha1,
-        fecha2: req.body.fecha2,
-        fecha3: req.body.fecha3,
-        estado: 'activo',
-    }
+exports.publicarContratacion = async function (req, res) {
     try {
-        
-        var createdContrato = await ContratoService.publicarContratacion(Contrato);
-       
-        return res.status(201).json({createdContrato, message: "Succesfully Created Contract"})
+        const fecha3 = req.body.fecha3 ? new Date(req.body.fecha3) : null;
+
+        const Contrato = {
+            nombre: req.body.nombre || null,
+            material: req.body.material || null,
+            localidad: req.body.localidad || null,
+            direccion: req.body.direccion || null,
+            calles: req.body.calles || null,
+            telefono: req.body.telefono || null,
+            bacha: req.body.bacha || null,
+            medidas: req.body.medidas || null,
+            factura: req.body.factura || null,
+            pago: req.body.pago || null,
+            descripcion: req.body.descripcion || null,
+            fecha1: req.body.fecha1 || null,
+            fecha2: req.body.fecha2 || null,
+            fecha3: fecha3,
+            estado: 'activo',
+
+            notificaciones: {
+                notificacion24h: fecha3 ? new Date(fecha3.getTime() - 24 * 60 * 60 * 1000) : null,
+                notificacion1h: fecha3 ? new Date(fecha3.getTime() - 1 * 60 * 60 * 1000) : null,
+            },
+
+            enviada24h: false,
+            enviada1h: false,
+        };
+
+        const createdContrato = await ContratoService.publicarContratacion(Contrato);
+        return res.status(201).json({ createdContrato, message: "Successfully Created Contract" });
+
     } catch (e) {
-        return res.status(400).json({status: 400, message: "Contract Creation was Unsuccesfull"})
+        console.error("Error al crear contrato:", e);
+        return res.status(400).json({ status: 400, message: e.message });
     }
-}
+};
 
-exports.modificarContratacion = async function (req, res, next) {
-    if (!req.body._id) {
-        return res.status(400).json({status: 400., message: "Id be present"})
-    }
-    var Contrato = {
-        id: req.body._id ? req.body._id : null,
-        nombre: req.body.nombre ? req.body.nombre : null,
-        material: req.body.material ? req.body.material : null,
-        localidad: req.body.localidad ? req.body.localidad : null,
-        direccion: req.body.direccion ? req.body.direccion : null,
-        calles: req.body.calles ? req.body.calles : null,
-        telefono: req.body.telefono ? req.body.telefono : null,
-        bacha: req.body.bacha ? req.body.bacha : null,
-        medidas: req.body.medidas ? req.body.medidas : null,
-        factura: req.body.factura ? req.body.factura : null,
-        pago: req.body.pago ? req.body.pago : null,
-        descripcion: req.body.descripcion ? req.body.descripcion : null,
-        fecha1: req.body.fecha1 ? req.body.fecha1 : null,
-        fecha2: req.body.fecha2 ? req.body.fecha2 : null,
-        fecha3: req.body.fecha3 ? req.body.fecha3 : null,
-        estado: req.body.estado ? req.body.estado : null,
-    }
-
+exports.modificarContratacion = async function (req, res) {
     try {
-        var updatedContrato = await ContratoService.modificarContratacion(Contrato);
-        return res.status(200).json({status: 200, data: updatedContrato, message: "Succesfully Updated Contrato"})
+        if (!req.body._id) {
+            return res.status(400).json({ status: 400, message: "ID is required" });
+        }
+
+        const fecha3 = req.body.fecha3 ? new Date(req.body.fecha3) : null;
+
+        const Contrato = {
+            _id: req.body._id,
+            nombre: req.body.nombre || null,
+            material: req.body.material || null,
+            localidad: req.body.localidad || null,
+            direccion: req.body.direccion || null,
+            calles: req.body.calles || null,
+            telefono: req.body.telefono || null,
+            bacha: req.body.bacha || null,
+            medidas: req.body.medidas || null,
+            factura: req.body.factura || null,
+            pago: req.body.pago || null,
+            descripcion: req.body.descripcion || null,
+            fecha1: req.body.fecha1 || null,
+            fecha2: req.body.fecha2 || null,
+            fecha3: fecha3,
+            estado: req.body.estado || null,
+
+            notificaciones: {
+                notificacion24h: fecha3 ? new Date(fecha3.getTime() - 24 * 60 * 60 * 1000) : null,
+                notificacion1h: fecha3 ? new Date(fecha3.getTime() - 1 * 60 * 60 * 1000) : null,
+            }
+        };
+
+        const updatedContrato = await ContratoService.modificarContratacion(Contrato);
+        return res.status(200).json({ status: 200, data: updatedContrato, message: "Successfully Updated Contrato" });
+
     } catch (e) {
-        return res.status(400).json({status: 400., message: e.message})
+        console.error("Error al modificar contrato:", e);
+        return res.status(400).json({ status: 400, message: e.message });
     }
-}
+};
 
 exports.borrarContratacion = async function (req, res, next) {
     
