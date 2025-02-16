@@ -5,6 +5,12 @@ var jwt = require('jsonwebtoken');
 _this = this
 
 exports.publicarContratacion = async function (contrato) {
+    // Convertir fecha3 a objeto Date
+    const fecha3 = contrato.fecha3 ? new Date(contrato.fecha3) : null;
+    // Calcular las fechas de notificación si fecha3 existe
+    const notificacion24h = fecha3 ? new Date(fecha3.getTime() - 24 * 60 * 60 * 1000) : null;
+    const notificacion1h = fecha3 ? new Date(fecha3.getTime() - 1 * 60 * 60 * 1000) : null;
+
     const newContrato = new Contrato({
         nombre: contrato.nombre || null,
         material: contrato.material || null,
@@ -19,37 +25,36 @@ exports.publicarContratacion = async function (contrato) {
         descripcion: contrato.descripcion || null,
         fecha1: contrato.fecha1 || null,
         fecha2: contrato.fecha2 || null,
-        fecha3: contrato.fecha3 || null,
+        fecha3: fecha3,
         estado: contrato.estado || null,
 
+        // Asignamos las fechas calculadas
         notificaciones: {
-            notificacion24h: contrato.notificaciones?.notificacion24h || null,
-            notificacion1h: contrato.notificaciones?.notificacion1h || null,
-          },
+            notificacion24h: notificacion24h,
+            notificacion1h: notificacion1h,
+        },
       
-          // Inicializamos los flags de notificaciones enviadas
-          enviada24h: contrato.enviada24h ?? false,
-          enviada1h: contrato.enviada1h ?? false,
-      });
+        // Inicializamos las flags de notificaciones enviadas
+        enviada24h: false,
+        enviada1h: false,
+    });
       
-
     try {
-        console.log(1)
+        console.log(1);
         var savedContrato = await newContrato.save();
-        console.log(2)
-        var token = jwt.sign({
-            id: savedContrato._id,
-        }, process.env.SECRET, {
-            expiresIn: 86400 // expires in 24 hours
-        });
+        console.log(2);
+        var token = jwt.sign(
+          { id: savedContrato._id },
+          process.env.SECRET,
+          { expiresIn: 86400 } // 24 hours
+        );
         return token;
     } catch (e) {
-      
-        console.log(e)    
-        throw Error("Error while Creating Contrato")
+        console.log(e);
+        throw Error("Error while Creating Contrato");
     }
-
 }
+
 
 exports.modificarContratacion = async function (contrato) {
     var id = { _id: contrato.id }
