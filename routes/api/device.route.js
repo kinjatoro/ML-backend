@@ -4,6 +4,7 @@ const router = express.Router();
 const Device = require('../../models/device');
 
 router.post('/register-token', async (req, res) => {
+  console.log("Datos recibidos:", req.body);
   const { token } = req.body;
   if (!token) {
     return res.status(400).json({ error: 'Token no provisto' });
