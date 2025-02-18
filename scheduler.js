@@ -11,7 +11,7 @@ cron.schedule('* * * * *', async () => {
   try {
     // Procesar pedidos para notificación de 24 horas antes
     const orders24h = await Order.find({
-      'notificaciones.notificacion24h': { $ne: null, $lte: ahora },
+      'notificaciones.notificacion24h': { $lte: ahora },
       enviada24h: false
     });
 
@@ -39,7 +39,7 @@ cron.schedule('* * * * *', async () => {
 
     // Procesar pedidos para notificación de 1 hora antes
     const orders1h = await Order.find({
-      'notificaciones.notificacion1h': {$ne: null, $lte: ahora },
+      'notificaciones.notificacion1h': { $lte: ahora },
       enviada1h: false
     });
 
