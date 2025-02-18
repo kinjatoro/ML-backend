@@ -7,9 +7,16 @@ _this = this
 exports.publicarContratacion = async function (contrato) {
     // Convertir fecha3 a objeto Date
     const fecha3 = contrato.fecha3 ? new Date(contrato.fecha3) : null;
+
+    const ahora = new Date();
+
     // Calcular las fechas de notificación si fecha3 existe
     const notificacion24h = fecha3 ? new Date(fecha3.getTime() - 24 * 60 * 60 * 1000) : null;
     const notificacion1h = fecha3 ? new Date(fecha3.getTime() - 1 * 60 * 60 * 1000) : null;
+
+    if (notificacion1h && notificacion1h <= ahora) {
+        notificacion1h = null;
+    }
 
     const newContrato = new Contrato({
         nombre: contrato.nombre || null,
