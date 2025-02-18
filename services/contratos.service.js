@@ -8,8 +8,10 @@ exports.publicarContratacion = async function (contrato) {
     // Convertir fecha3 a objeto Date
     const fecha3 = contrato.fecha3 ? new Date(contrato.fecha3) : null;
     // Calcular las fechas de notificación si fecha3 existe
-    const notificacion24h = fecha3 ? new Date(fecha3.getTime() - 24 * 60 * 60 * 1000) : null;
-    const notificacion1h = fecha3 ? new Date(fecha3.getTime() - 1 * 60 * 60 * 1000) : null;
+    const notificaciones = fecha3 ? {
+        notificacion24h: new Date(fecha3.getTime() - 24 * 60 * 60 * 1000),
+        notificacion1h: new Date(fecha3.getTime() - 1 * 60 * 60 * 1000),
+    } : {};
 
     const newContrato = new Contrato({
         nombre: contrato.nombre || null,
@@ -29,14 +31,11 @@ exports.publicarContratacion = async function (contrato) {
         estado: contrato.estado || null,
 
         // Asignamos las fechas calculadas
-        notificaciones: {
-            notificacion24h: notificacion24h,
-            notificacion1h: notificacion1h,
-        },
+        ...(Object.keys(notificaciones).length > 0 && { notificaciones }),
       
         // Inicializamos las flags de notificaciones enviadas
-        enviada24h: false,
-        enviada1h: false,
+        enviada24h: !!fecha3,
+        enviada1h: !!fecha3,
     });
       
     try {
