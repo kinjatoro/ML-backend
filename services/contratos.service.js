@@ -5,12 +5,16 @@ var jwt = require('jsonwebtoken');
 _this = this
 
 exports.publicarContratacion = async function (contrato) {
-    // Convertir fecha3 a objeto Date
-    const fecha3 = contrato.fecha3 ? new Date(contrato.fecha3) : null;
-
-    if (fecha3 && isNaN(fecha3.getTime())) {
-        console.error("Error: fecha3 no es válida:", contrato.fecha3);
-        throw Error("Fecha3 tiene un formato inválido.");
+    let fecha3 = contrato.fecha3;
+    console.log("Fecha3 recibida en el servicio:", fecha3);
+    if (!fecha3 || fecha3 === "" || fecha3 === "null" || fecha3 === "undefined") {
+        fecha3 = null;
+    } else {
+        fecha3 = new Date(fecha3);
+        if (isNaN(fecha3.getTime())) {
+            console.error(" Fecha3 con formato inválido:", contrato.fecha3);
+            fecha3 = null;  // Evita errores si el formato es incorrecto
+        }
     }
 
     const ahora = new Date();
@@ -43,8 +47,8 @@ exports.publicarContratacion = async function (contrato) {
 
         // Asignamos las fechas calculadas
         notificaciones: {
-            notificacion24h: notificacion24h,
-            notificacion1h: notificacion1h,
+            notificacion24h,
+            notificacion1h,
         },
       
         // Inicializamos las flags de notificaciones enviadas
