@@ -33,43 +33,55 @@ exports.publicarContratacion = async function (req, res, next) {
 
 exports.modificarContratacion = async function (req, res, next) {
     if (!req.body._id) {
-        return res.status(400).json({status: 400., message: "Id be present"})
+        return res.status(400).json({ status: 400, message: "Id must be present" });
     }
 
-    const fecha3 = req.body.fecha3 ? new Date(req.body.fecha3) : null;
+    console.log("📌 Valor recibido de fecha3 en request:", req.body.fecha3);
 
-
-    var Contrato = {
-        id: req.body._id ? req.body._id : null,
-        nombre: req.body.nombre ? req.body.nombre : null,
-        material: req.body.material ? req.body.material : null,
-        localidad: req.body.localidad ? req.body.localidad : null,
-        direccion: req.body.direccion ? req.body.direccion : null,
-        calles: req.body.calles ? req.body.calles : null,
-        telefono: req.body.telefono ? req.body.telefono : null,
-        bacha: req.body.bacha ? req.body.bacha : null,
-        medidas: req.body.medidas ? req.body.medidas : null,
-        factura: req.body.factura ? req.body.factura : null,
-        pago: req.body.pago ? req.body.pago : null,
-        descripcion: req.body.descripcion ? req.body.descripcion : null,
-        fecha1: req.body.fecha1 ? req.body.fecha1 : null,
-        fecha2: req.body.fecha2 ? req.body.fecha2 : null,
-        fecha3: fecha3,
-        estado: req.body.estado ? req.body.estado : null,
-
-        notificaciones: {
-            notificacion24h: fecha3 ? new Date(fecha3.getTime() - 24 * 60 * 60 * 1000) : null,
-            notificacion1h: fecha3 ? new Date(fecha3.getTime() - 1 * 60 * 60 * 1000) : null,
+    // ✅ Normalizar fecha3 antes de enviarla al servicio
+    let fecha3 = req.body.fecha3;
+    if (!fecha3 || fecha3 === "" || fecha3 === "null" || fecha3 === "undefined") {
+        fecha3 = null;
+    } else {
+        try {
+            fecha3 = new Date(fecha3);
+            if (isNaN(fecha3.getTime())) {
+                console.error("🚨 Fecha3 con formato inválido en request:", req.body.fecha3);
+                fecha3 = null;
+            }
+        } catch (error) {
+            console.error("⚠️ Error al convertir fecha3 en request:", error);
+            fecha3 = null;
         }
     }
 
+    var contrato = {
+        id: req.body._id,
+        nombre: req.body.nombre || null,
+        material: req.body.material || null,
+        localidad: req.body.localidad || null,
+        direccion: req.body.direccion || null,
+        calles: req.body.calles || null,
+        telefono: req.body.telefono || null,
+        bacha: req.body.bacha || null,
+        medidas: req.body.medidas || null,
+        factura: req.body.factura || null,
+        pago: req.body.pago || null,
+        descripcion: req.body.descripcion || null,
+        fecha1: req.body.fecha1 || null,
+        fecha2: req.body.fecha2 || null,
+        fecha3: fecha3, 
+        estado: req.body.estado || null
+    };
+
     try {
-        var updatedContrato = await ContratoService.modificarContratacion(Contrato);
-        return res.status(200).json({status: 200, data: updatedContrato, message: "Succesfully Updated Contrato"})
+        var updatedContrato = await ContratoService.modificarContratacion(contrato);
+        return res.status(200).json({ status: 200, data: updatedContrato, message: "Successfully Updated Contrato" });
     } catch (e) {
-        return res.status(400).json({status: 400., message: e.message})
+        return res.status(400).json({ status: 400, message: e.message });
     }
-}
+};
+
 
 exports.borrarContratacion = async function (req, res, next) {
     
