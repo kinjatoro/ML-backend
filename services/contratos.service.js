@@ -6,26 +6,33 @@ _this = this
 
 exports.publicarContratacion = async function (contrato) {
     let fecha3 = contrato.fecha3;
-    console.log("Fecha3 recibida en el servicio:", fecha3);
+
+    console.log("📌 Fecha3 recibida en el servicio:", fecha3);
+
+    // ✅ Si fecha3 es undefined, null, "", "null" (string) o "undefined" (string), la seteamos a null
     if (!fecha3 || fecha3 === "" || fecha3 === "null" || fecha3 === "undefined") {
         fecha3 = null;
     } else {
-        fecha3 = new Date(fecha3);
-        if (isNaN(fecha3.getTime())) {
-            console.error(" Fecha3 con formato inválido:", contrato.fecha3);
-            fecha3 = null;  // Evita errores si el formato es incorrecto
+        try {
+            fecha3 = new Date(fecha3);
+            if (isNaN(fecha3.getTime())) {
+                console.error("🚨 Fecha3 con formato inválido:", contrato.fecha3);
+                fecha3 = null;  // Evita errores si el formato es incorrecto
+            }
+        } catch (error) {
+            console.error("⚠️ Error al convertir fecha3:", error);
+            fecha3 = null;
         }
     }
 
     const ahora = new Date();
 
-    // Calcular las fechas de notificación si fecha3 existe
+    // ✅ Evita cálculos si fecha3 es null
     const notificacion24h = fecha3 ? new Date(fecha3.getTime() - 24 * 60 * 60 * 1000) : null;
     const notificacion1h = fecha3 ? new Date(fecha3.getTime() - 1 * 60 * 60 * 1000) : null;
 
     if (fecha3 && fecha3 < ahora) {
-        notificacion24h = null;
-        notificacion1h = null;
+        console.warn("⚠️ Fecha3 es anterior a la fecha actual. No se programarán notificaciones.");
     }
 
     const newContrato = new Contrato({
@@ -42,35 +49,30 @@ exports.publicarContratacion = async function (contrato) {
         descripcion: contrato.descripcion || null,
         fecha1: contrato.fecha1 || null,
         fecha2: contrato.fecha2 || null,
-        fecha3: fecha3,
+        fecha3: fecha3,  // ✅ Ahora siempre tiene un valor válido (null o Date)
+
         estado: contrato.estado || "activo",
 
-        // Asignamos las fechas calculadas
         notificaciones: {
             notificacion24h,
             notificacion1h,
         },
-      
-        // Inicializamos las flags de notificaciones enviadas
+
         enviada24h: false,
         enviada1h: false,
     });
-      
+
     try {
-        console.log(1);
-        var savedContrato = await newContrato.save();
-        console.log(2);
-        var token = jwt.sign(
-          { id: savedContrato._id },
-          process.env.SECRET,
-          { expiresIn: 86400 } // 24 hours
-        );
-        return token;
+        console.log("✅ Guardando contrato con fecha3:", fecha3);
+        const savedContrato = await newContrato.save();
+        console.log("🎉 Contrato guardado correctamente:", savedContrato);
+        return savedContrato;
     } catch (e) {
-        console.log(e);
+        console.error("🚨 Error al guardar contrato:", e);
         throw Error("Error while Creating Contrato");
     }
-}
+};
+
 
 
 exports.modificarContratacion = async function (contrato) {
