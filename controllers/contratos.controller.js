@@ -1,6 +1,9 @@
 var ContratoService = require('../services/contratos.service');
 
 exports.publicarContratacion = async function (req, res, next) {
+    
+     console.log("Valor recibido de fecha3:", req.body.fecha3); // 🔍 Debugging
+    
     var Contrato = {
         nombre: req.body.nombre,
         material: req.body.material,
