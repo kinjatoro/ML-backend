@@ -14,7 +14,8 @@ exports.publicarContratacion = async function (contrato) {
     const notificacion24h = fecha3 ? new Date(fecha3.getTime() - 24 * 60 * 60 * 1000) : null;
     const notificacion1h = fecha3 ? new Date(fecha3.getTime() - 1 * 60 * 60 * 1000) : null;
 
-    if (notificacion1h && notificacion1h <= ahora) {
+    if (fecha3 && fecha3 < ahora) {
+        notificacion24h = null;
         notificacion1h = null;
     }
 
@@ -33,7 +34,7 @@ exports.publicarContratacion = async function (contrato) {
         fecha1: contrato.fecha1 || null,
         fecha2: contrato.fecha2 || null,
         fecha3: fecha3,
-        estado: contrato.estado || null,
+        estado: contrato.estado || "activo",
 
         // Asignamos las fechas calculadas
         notificaciones: {
