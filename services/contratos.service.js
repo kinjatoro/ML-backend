@@ -26,13 +26,26 @@ exports.publicarContratacion = async function (contrato) {
     }
 
     const ahora = new Date();
+    let notificacion24h = null;
+    let notificacion1h = null;
 
-    // ✅ Evita cálculos si fecha3 es null
-    const notificacion24h = fecha3 ? new Date(fecha3.getTime() - 24 * 60 * 60 * 1000) : null;
-    const notificacion1h = fecha3 ? new Date(fecha3.getTime() - 1 * 60 * 60 * 1000) : null;
+    // Solo calcular notificaciones si fecha3 es válida y está al menos a 24 horas de ahora
+    if (fecha3 && fecha3 > ahora) {
+        const diferenciaMs = fecha3.getTime() - ahora.getTime();
+        const horasRestantes = diferenciaMs / (1000 * 60 * 60); // Convertimos a horas
 
-    if (fecha3 && fecha3 < ahora) {
-        console.warn("⚠️ Fecha3 es anterior a la fecha actual. No se programarán notificaciones.");
+        if (horasRestantes > 24) {
+            notificacion24h = new Date(fecha3.getTime() - 24 * 60 * 60 * 1000);
+        }
+        if (horasRestantes > 1) {
+            notificacion1h = new Date(fecha3.getTime() - 1 * 60 * 60 * 1000);
+        }
+
+        console.log(`🕒 Horas restantes para fecha3: ${horasRestantes}`);
+        console.log(`📅 Notificación 24h: ${notificacion24h}`);
+        console.log(`📅 Notificación 1h: ${notificacion1h}`);
+    } else {
+        console.warn("⚠️ No se programarán notificaciones porque fecha3 es nula o está demasiado cerca.");
     }
 
     const newContrato = new Contrato({
