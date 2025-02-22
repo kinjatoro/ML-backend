@@ -77,8 +77,8 @@ const contratoSchema = new mongoose.Schema({
     default: null,
   },
   notificaciones: {
-    notificacion24h: { type: Date }, // Fecha en que se debe enviar la notificación 24h antes
-    notificacion1h: { type: Date },  // Fecha en que se debe enviar la notificación 1h antes
+    notificacion24h: { type: Date, default: null }, // Fecha en que se debe enviar la notificación 24h antes
+    notificacion1h: { type: Date, default: null },  // Fecha en que se debe enviar la notificación 1h antes
   },
   enviada24h: { type: Boolean, default: false },
   enviada1h: { type: Boolean, default: false },

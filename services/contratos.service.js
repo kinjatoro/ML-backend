@@ -8,6 +8,11 @@ exports.publicarContratacion = async function (contrato) {
     // Convertir fecha3 a objeto Date
     const fecha3 = contrato.fecha3 ? new Date(contrato.fecha3) : null;
 
+    if (fecha3 && isNaN(fecha3.getTime())) {
+        console.error("Error: fecha3 no es válida:", contrato.fecha3);
+        throw Error("Fecha3 tiene un formato inválido.");
+    }
+
     const ahora = new Date();
 
     // Calcular las fechas de notificación si fecha3 existe
